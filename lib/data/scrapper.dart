@@ -80,18 +80,18 @@ class NeerajSchoolScrapper extends ChangeNotifier {
   Dio dio = Dio();
 
   Future<dynamic> fetchHomePage() async {
-    var resp = await dio.get("https://www.nmsindia.org/");
+    // var resp = await dio.get("https://www.nmsindia.org/");
     var imagesResp = await dio.get(
         'https://storage.elfsight.com/api/v2/data/19ec5d41f3b6cf80f70bf4b54fdd9c55');
 
-    if (resp.statusCode == 200) {
-      var document = parse(resp.data);
-      var bigCarouselImages =
-          document.querySelectorAll(".container .slide-image").map((el) {
-        return el.attributes['src'];
-      }).toList();
-      log(bigCarouselImages.toString());
-    }
+    // if (resp.statusCode == 200) {
+    //   var document = parse(resp.data);
+    //   var bigCarouselImages =
+    //       document.querySelectorAll(".container .slide-image").map((el) {
+    //     return el.attributes['src'];
+    //   }).toList();
+    //   log(bigCarouselImages.toString());
+    // }
 
     if (imagesResp.statusCode == 200) {
       var data = imagesResp.data;
@@ -105,8 +105,38 @@ class NeerajSchoolScrapper extends ChangeNotifier {
         });
       }
       log(formattedData.toString());
+      return formattedData;
     }
   }
 
-  Future<dynamic> fetchAboutPage() async {}
+  Future<dynamic> fetchEvents() async {
+    var resp = await dio.get("https://www.nmsindia.org/");
+    if (resp.statusCode == 200) {
+      var document = parse(resp.data);
+      List<Map<String, String>> events = [];
+      var eventsElements = document.querySelectorAll(".rt_banner a");
+      for (var i in eventsElements) {
+        events.add({"title": i.text.trim(), "link": i.attributes['href']!});
+      }
+      return events;
+    }
+  }
+
+  Future<dynamic> fetchEvent(String url) async {
+    var resp = await dio.get(url);
+    if (resp.statusCode == 200) {
+      var document = parse(resp.data);
+      dynamic data = {"body": [], "images": []};
+      var eventImages = document.querySelectorAll(".slide-image");
+      for (var i in eventImages) {
+        data['images'].add(i.attributes['src']);
+      }
+      var paragraphElemennts = document.querySelectorAll("font p");
+      for (var p in paragraphElemennts) {
+        data['body'].add(p.text);
+      }
+      log(data.toString());
+      return data;
+    }
+  }
 }
