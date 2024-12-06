@@ -7,7 +7,6 @@ import 'package:school_app/providers/data_provider.dart';
 import 'package:school_app/screens/about_page.dart';
 import 'package:school_app/screens/events_page.dart';
 import 'package:school_app/screens/notices_page.dart';
-import 'package:school_app/screens/settings_page.dart';
 import 'package:school_app/theme/provider.dart';
 import 'package:school_app/widget/drawer.dart';
 import 'screens/home_page.dart';
