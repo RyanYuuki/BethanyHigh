@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/widget/drawer.dart';
 
 class NoticesPage extends StatelessWidget {
   const NoticesPage({super.key});
