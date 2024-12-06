@@ -126,12 +126,22 @@ Future<dynamic> fetchHomePage() async {
       }
 
       var policies = [];
-      var policiesSelector = document
-          .querySelectorAll(".et_pb_row.et_pb_row_26.et_pb_equal_columns");
+      var policiesSelector = document.querySelectorAll(
+          ".et_pb_row.et_pb_row_26.et_pb_equal_columns .et_pb_with_border");
       for (var el in policiesSelector) {
-        var title = el.querySelector(".et_pb_text_inner h3")!.text;
-        var description = el.querySelector(".et_pb_text_inner p")!.text.trim();
-        policies.add({"title": title, "description": description});
+        var title = el.querySelector(".et_pb_text_inner h3")?.text;
+        var description = '';
+        if (el.querySelector(".et_pb_text_inner p")?.text != null && el.querySelector(".et_pb_text_inner p")?.text != '') {
+          description =
+              el.querySelector(".et_pb_text_inner p")!.text;
+        } else {
+            el.querySelector(".et_pb_text_inner")!.text;
+        }
+
+        var imgUrl =
+            el.querySelector(".et_pb_image_wrap img")?.attributes['data-src'];
+        policies
+            .add({"title": title, "description": description, "image": imgUrl});
       }
 
       var imageContainers = document.querySelectorAll(
@@ -157,6 +167,7 @@ Future<dynamic> fetchHomePage() async {
         "policies": policies,
         "departmentImages": departmentImages
       };
+      log(policies.toString());
       return data;
     } else {
       log('Failed to load page: ${response.statusCode}');
