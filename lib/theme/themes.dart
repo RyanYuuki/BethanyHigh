@@ -18,7 +18,7 @@ class AppColors {
 class AppTypography {
   static const String primaryFont = 'Poppins';
 
-  static TextStyle get _baseTextStyle => TextStyle(
+  static TextStyle get _baseTextStyle => const TextStyle(
         fontFamily: primaryFont,
         fontWeight: FontWeight.normal,
       );
@@ -52,18 +52,14 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     fontFamily: AppTypography.primaryFont,
-
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.seedColor,
       brightness: Brightness.light,
       primary: AppColors.primaryColor,
       secondary: AppColors.secondaryColor,
       error: AppColors.errorColor,
-      background: AppColors.lightBackground,
       surface: AppColors.lightSurface,
-      onBackground: AppColors.lightOnBackground,
     ),
-
     textTheme: TextTheme(
       displayLarge:
           AppTypography.headline1.copyWith(color: AppColors.lightOnBackground),
@@ -75,10 +71,9 @@ class AppTheme {
           AppTypography.bodyMedium.copyWith(color: AppColors.lightOnBackground),
       bodySmall: AppTypography.bodySmall,
     ),
-
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.grey.shade200,
+      fillColor: AppColors.lightOnBackground,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       hintStyle: TextStyle(color: Colors.grey.shade600),
       prefixIconColor: Colors.grey.shade700,
@@ -96,7 +91,6 @@ class AppTheme {
         borderSide: const BorderSide(color: AppColors.primaryColor, width: 2),
       ),
     ),
-
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
@@ -110,23 +104,20 @@ class AppTheme {
         ),
       ),
     ),
-
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.primaryColor,
-        side: BorderSide(color: AppColors.primaryColor),
+        side: const BorderSide(color: AppColors.primaryColor),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
     ),
-
     iconTheme: const IconThemeData(
       color: AppColors.lightOnBackground,
       size: 24,
     ),
-
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: AppColors.primaryColor,
       foregroundColor: Colors.white,
@@ -140,18 +131,14 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     fontFamily: AppTypography.primaryFont,
-
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.seedColor,
       brightness: Brightness.dark,
       primary: AppColors.primaryColor,
       secondary: AppColors.secondaryColor,
       error: AppColors.errorColor,
-      background: AppColors.darkBackground,
       surface: AppColors.darkSurface,
-      onBackground: AppColors.darkOnBackground,
     ),
-
     textTheme: TextTheme(
       displayLarge:
           AppTypography.headline1.copyWith(color: AppColors.darkOnBackground),
@@ -163,7 +150,6 @@ class AppTheme {
           AppTypography.bodyMedium.copyWith(color: AppColors.darkOnBackground),
       bodySmall: AppTypography.bodySmall,
     ),
-
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.grey.shade800,
@@ -181,10 +167,9 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+        borderSide: const BorderSide(color: Colors.green, width: 2),
       ),
     ),
-
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
@@ -198,23 +183,20 @@ class AppTheme {
         ),
       ),
     ),
-
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.primaryColor,
-        side: BorderSide(color: AppColors.primaryColor),
+        side: const BorderSide(color: AppColors.primaryColor),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
       ),
     ),
-
-    iconTheme: IconThemeData(
+    iconTheme: const IconThemeData(
       color: AppColors.darkOnBackground,
       size: 24,
     ),
-
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: AppColors.primaryColor,
       foregroundColor: Colors.white,
