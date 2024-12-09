@@ -3,17 +3,28 @@ import 'package:school_app/data/api.dart';
 
 class DataProvider extends ChangeNotifier {
   dynamic homePageData;
+  dynamic eventsData;
   DataProvider() {
     fetchHomePageData();
   }
 
-  Future<void> fetchHomePageData() async {
-    final temp = await fetchHomePage();
-    homePageData = temp;
-    notifyListeners();
+  Future<dynamic> fetchHomePageData() async {
+    if (homePageData == null) {
+      final temp = await fetchHomePage();
+      homePageData = temp;
+      return homePageData;
+    } else {
+      return homePageData;
+    }
   }
 
-  dynamic getData() {
-    return homePageData ?? [];
+  Future<dynamic> fetchEventsData() async {
+    if (eventsData == null) {
+      final temp = await fetchEvents();
+      eventsData = temp;
+      return eventsData;
+    } else {
+      return eventsData;
+    }
   }
 }
