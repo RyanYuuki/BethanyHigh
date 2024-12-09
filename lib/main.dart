@@ -1,12 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/providers/data_provider.dart';
 import 'package:school_app/screens/about_page.dart';
+import 'package:school_app/screens/contact_page.dart';
 import 'package:school_app/screens/events_page.dart';
-import 'package:school_app/screens/notices_page.dart';
 import 'package:school_app/theme/provider.dart';
 import 'package:school_app/widget/drawer.dart';
 import 'screens/home_page.dart';
@@ -19,14 +20,16 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
       };
 }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox('themeData');
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ThemeProvider(initialColor: Colors.green),
+          create: (_) => ThemeProvider(),
         ),
         ChangeNotifierProvider(create: (_) => DataProvider())
       ],
@@ -53,8 +56,8 @@ class _MainAppState extends State<MainApp> {
   final List<Widget> _pages = [
     const HomePage(),
     const EventsPage(),
-    const NoticesPage(),
-    const AboutPage(),
+    const ContactPage(),
+    AboutPage(),
   ];
 
   void _onItemSelected(int index) {
@@ -93,12 +96,22 @@ class _MainAppState extends State<MainApp> {
                       onPressed: () => _scaffoldKey.currentState?.openDrawer(),
                     ),
                     const SizedBox(width: 10),
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Good Morning,"),
-                        Text("Welcome to Bethany High",
-                            style: TextStyle(fontWeight: FontWeight.w600)),
+                        Text(getGreeting()),
+                        Text.rich(
+                            TextSpan(children: [
+                              const TextSpan(text: "Welcome to"),
+                              TextSpan(
+                                  text: " Bethany High",
+                                  style: TextStyle(
+                                      color: themeProvider
+                                          .selectedTheme.colorScheme.primary,
+                                      fontWeight: FontWeight.bold))
+                            ]),
+                            style:
+                                const TextStyle(fontWeight: FontWeight.w600)),
                       ],
                     ),
                     const Spacer(),
