@@ -55,7 +55,7 @@ class ListTileWithCheckMark extends StatelessWidget {
           if (subtitle != '')
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.displaySmall,
+              maxLines: 1,
             )
         ],
       ),

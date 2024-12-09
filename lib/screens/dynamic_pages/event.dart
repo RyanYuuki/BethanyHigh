@@ -30,6 +30,12 @@ class _EventPageState extends State<EventPage> {
     });
   }
 
+  String stripHtmlTags(String htmlString) {
+    final RegExp htmlTagRegExp =
+        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+    return htmlString.replaceAll(htmlTagRegExp, '').trim();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (data == null) {
@@ -71,6 +77,7 @@ class _EventPageState extends State<EventPage> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(widget.eventName,
+                maxLines: 2,
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16)),
               ),
@@ -114,7 +121,7 @@ class _EventPageState extends State<EventPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      content,
+                      stripHtmlTags(content),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             height: 1.5,
                           ),

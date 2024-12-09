@@ -107,12 +107,12 @@ class AboutPage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+          color: Theme.of(context).colorScheme.secondaryContainer,
           boxShadow: [
             BoxShadow(
               color: Theme.of(context)
                   .colorScheme
-                  .surfaceContainerHighest
+                  .secondaryContainer
                   .withOpacity(Theme.of(context).brightness == Brightness.dark
                       ? 0.3
                       : 0.7),
@@ -158,7 +158,7 @@ class AboutPage extends StatelessWidget {
           Text(title,
               style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
           if (image != "")
