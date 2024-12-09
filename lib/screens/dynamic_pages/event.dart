@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
-import 'package:school_app/data/scrapper.dart';
+import 'package:school_app/data/api.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _EventPageState extends State<EventPage> {
   }
 
   Future<void> fetchEvent() async {
-    final tempData = await NeerajSchoolScrapper().fetchEvent(widget.eventLink);
+    final tempData = await fetchEventData(widget.eventLink);
     setState(() {
       data = tempData;
     });
@@ -55,88 +55,75 @@ class _EventPageState extends State<EventPage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            leading: IconButton(
-              icon: Icon(
-                IconlyBold.arrow_left,
-                color: Theme.of(context).colorScheme.onSurface,
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+        children: [
+          Row(
+            children: [
+              IconButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Theme.of(context).colorScheme.surfaceContainer),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(widget.eventName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
               ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            centerTitle: true,
-            title: Text(
-              widget.eventName,
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            floating: true,
-            snap: true,
+            ],
           ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            sliver: SliverToBoxAdapter(
-              child: SizedBox(
-                height: 250,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 300),
-                  child: CarouselView(
-                    itemExtent: MediaQuery.of(context).size.width * 0.90,
-                    shrinkExtent: 200,
-                    padding: const EdgeInsets.all(10.0),
-                    children: List.generate(
-                      data['images'].length,
-                      (index) => ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: CachedNetworkImage(
-                          imageUrl: data['images'][index],
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          placeholder: (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey[900]!,
-                            highlightColor: Colors.grey[700]!,
-                            child: Container(
-                              color: Colors.grey[400],
-                              height: 250,
-                              width: double.infinity,
-                            ),
-                          ),
-                        ),
+          const SizedBox(height: 30),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(12)),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: data?['image'] ?? '',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: 250,
+                    filterQuality: FilterQuality.high,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Theme.of(context).colorScheme.surface,
+                      highlightColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
+                      child: Container(
+                        color:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        height: 250,
+                        width: double.infinity,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
+                ...data['body'].map<Widget>((content) {
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 8),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainer,
-                      borderRadius: BorderRadius.circular(16),
+                      color: Theme.of(context).colorScheme.secondaryContainer,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      data['body'][index],
+                      content,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             height: 1.5,
                           ),
                     ),
                   );
-                },
-                childCount: data['body'].length,
-              ),
+                }).toList(),
+              ],
             ),
-          )
+          ),
         ],
       ),
     );
