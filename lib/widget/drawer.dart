@@ -35,7 +35,7 @@ class CustomDrawer extends StatelessWidget {
                           .withOpacity(
                               Theme.of(context).brightness == Brightness.dark
                                   ? 0.3
-                                  : 0.7),
+                                  : 0.8),
                       blurRadius: 10.0,
                       spreadRadius: 4.0,
                       offset: const Offset(-2.0, 0),
@@ -56,21 +56,27 @@ class CustomDrawer extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(
+            Divider(
               height: 30,
               indent: 5,
               endIndent: 5,
+              color: Theme.of(context).colorScheme.surfaceContainer,
             ),
             _buildDrawerItem(
                 IconlyLight.home, 'Home', 0, context, IconlyBold.home),
             _buildDrawerItem(IconlyLight.calendar, 'Events', 1, context,
                 IconlyBold.calendar),
-            _buildDrawerItem(IconlyLight.notification, 'Notices', 2, context,
-                IconlyBold.notification),
+            _buildDrawerItem(
+                IconlyLight.call, 'Contact', 2, context, IconlyBold.call),
             _buildDrawerItem(IconlyLight.info_circle, 'About', 3, context,
                 IconlyBold.info_circle),
             const Spacer(),
-            const Divider(),
+            Divider(
+              height: 30,
+              indent: 5,
+              endIndent: 5,
+              color: Theme.of(context).colorScheme.surfaceContainer,
+            ),
             _buildDrawerItem(IconlyLight.setting, 'Settings', 4, context,
                 IconlyBold.setting),
           ],
@@ -114,7 +120,8 @@ class CustomDrawer extends StatelessWidget {
         selected: isSelected,
         onTap: () {
           if (index == 4) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()));
           } else {
             onItemSelected(index);
             Navigator.pop(context);
