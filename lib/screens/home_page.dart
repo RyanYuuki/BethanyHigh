@@ -1,9 +1,25 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/providers/data_provider.dart';
+import 'package:school_app/theme/provider.dart';
 import 'package:shimmer/shimmer.dart';
+
+String getGreeting() {
+  final hour = DateTime.now().hour;
+
+  if (hour >= 5 && hour < 12) {
+    return "Good Morning!";
+  } else if (hour >= 12 && hour < 17) {
+    return "Good Afternoon!";
+  } else if (hour >= 17 && hour < 21) {
+    return "Good Evening!";
+  } else {
+    return "Good Night!";
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +30,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   dynamic data;
+  late double radiusMultiplier;
+  late double glowMultiplier;
+  late double blurMultiplier;
 
   List<Map<String, String>> figures = [
     {"title": "Years Since Inception", "progress": "60"},
@@ -31,13 +50,14 @@ class _HomePageState extends State<HomePage> {
     fetchData();
   }
 
-  void fetchData() {
-    final provider = Provider.of<DataProvider>(context, listen: false);
-    Future.delayed(const Duration(seconds: 2), () {
+  void fetchData() async {
+    final tempData = await Provider.of<DataProvider>(context, listen: false)
+        .fetchHomePageData();
+    if (tempData != null) {
       setState(() {
-        data = provider.homePageData;
+        data = tempData;
       });
-    });
+    }
   }
 
   @override
@@ -54,15 +74,19 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
-    return Consumer<DataProvider>(
-      builder: (BuildContext context, DataProvider provider, Widget? child) {
-        final data = provider.getData();
+    return Builder(
+      builder: (BuildContext context) {
         final campusImages = data?['campusImages'];
         final smallData = data?['smallData'];
         final topStudents = data?['topStudents'];
         final upcomingEvents = data?['upcomingEvents'];
         final latestEvents = data?['events'];
         final ourPolicies = data?['policies'];
+        final departmentImages = data['departmentImages'];
+        final provider = Provider.of<ThemeProvider>(context);
+        radiusMultiplier = provider.radiusMultiplier;
+        glowMultiplier = provider.glowMultiplier;
+        blurMultiplier = provider.blurMultiplier;
 
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
@@ -70,90 +94,168 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.only(bottom: 100),
             shrinkWrap: true,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text("Discover our Campus",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text("Discover our Departments",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 300),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12 * radiusMultiplier),
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).colorScheme.surface,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                  border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.1),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 140,
+                        viewportFraction: 1,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 5),
+                        autoPlayAnimationDuration:
+                            const Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: false,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      items: departmentImages.map<Widget>((i) {
+                        return Container(
+                            clipBehavior: Clip.antiAlias,
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    12 * radiusMultiplier)),
+                            child: CachedNetworkImage(
+                              imageUrl: i,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ));
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 10),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text("Bethany Institutions",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 5),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                          "A community fostering greatness through unity. Explore our top ICSE schools and citywide branches.",
+                          style: TextStyle()),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text("Discover our Campus",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
+              ),
+              SizedBox(
+                height: 270,
                 child: CarouselView(
-                  itemExtent: MediaQuery.of(context).size.width * 0.90,
+                  itemSnapping: true,
+                  itemExtent: MediaQuery.of(context).size.width,
                   shrinkExtent: 200,
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier)),
                   padding: const EdgeInsets.all(10.0),
                   children: List.generate(
                     campusImages.length,
-                    (index) => Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: CachedNetworkImage(
+                    (index) => Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.surface,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.1),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          CachedNetworkImage(
                             imageUrl: campusImages[index]['image'],
                             fit: BoxFit.cover,
                             width: double.infinity,
+                            height: 200,
                             filterQuality: FilterQuality.high,
                             placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[900]!,
-                              highlightColor: Colors.grey[700]!,
+                              baseColor: Theme.of(context).colorScheme.surface,
+                              highlightColor: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
                               child: Container(
-                                color: Colors.grey[400],
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerLow,
                                 height: 250,
                                 width: double.infinity,
                               ),
                             ),
                           ),
-                        ),
-                        Positioned.fill(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.4),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 20,
-                          left: 0,
-                          right: 0,
-                          child: Text(
+                          const SizedBox(height: 10),
+                          Text(
                             campusImages[index]['title'],
                             style: const TextStyle(
-                              color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black45,
-                                  blurRadius: 8,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text("Facts & Figures",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
               GridView.builder(
                 shrinkWrap: true,
@@ -162,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  mainAxisExtent: 120,
+                  mainAxisExtent: 130,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
                 ),
@@ -171,7 +273,8 @@ class _HomePageState extends State<HomePage> {
                   return Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier),
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       boxShadow: [
                         BoxShadow(
@@ -188,23 +291,26 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
+                          width: double.maxFinite,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius:
+                                BorderRadius.circular(12 * radiusMultiplier),
                             boxShadow: [
                               BoxShadow(
                                 color: Theme.of(context)
                                     .colorScheme
-                                    .primaryFixedDim
+                                    .primary
                                     .withOpacity(Theme.of(context).brightness ==
                                             Brightness.dark
                                         ? 0.3
                                         : 0.7),
-                                blurRadius: 10.0,
-                                spreadRadius: 10.0,
+                                blurRadius: 10.0 * blurMultiplier,
+                                spreadRadius: 2.0 * glowMultiplier,
                                 offset: const Offset(-2.0, 0),
                               ),
                             ],
@@ -216,7 +322,7 @@ class _HomePageState extends State<HomePage> {
                                 .headlineSmall
                                 ?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: Theme.of(context).colorScheme.surface,
                                 ),
                           ),
                         ),
@@ -237,11 +343,13 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text("Why Choose Us?",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
               GridView.builder(
                 shrinkWrap: true,
@@ -260,7 +368,8 @@ class _HomePageState extends State<HomePage> {
                   return Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier),
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       boxShadow: const [
                         BoxShadow(
@@ -280,7 +389,8 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius:
+                              BorderRadius.circular(12 * radiusMultiplier),
                           child: CachedNetworkImage(
                             imageUrl: itemData['image'],
                             height: 150,
@@ -330,11 +440,13 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text("Top Students",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text("Our Policies",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
               GridView.builder(
                 shrinkWrap: true,
@@ -342,26 +454,19 @@ class _HomePageState extends State<HomePage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  mainAxisExtent: 200,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                ),
-                itemCount: topStudents.length,
+                    crossAxisCount: 1,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    mainAxisExtent: 270),
+                itemCount: ourPolicies.length,
                 itemBuilder: (context, index) {
-                  final itemData = topStudents[index];
+                  final itemData = ourPolicies[index];
                   return Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier),
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        ),
-                      ],
                       border: Border.all(
                         color: Theme.of(context)
                             .colorScheme
@@ -369,65 +474,70 @@ class _HomePageState extends State<HomePage> {
                             .withOpacity(0.1),
                       ),
                     ),
-                    child: Row(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: CachedNetworkImage(
-                            imageUrl: itemData['image'],
-                            height: 150,
-                            width: 120,
-                            fit: BoxFit.cover,
-                          ),
+                        Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(8 * radiusMultiplier),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withOpacity(
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? 0.3
+                                                : 0.7),
+                                    blurRadius: 10.0 * blurMultiplier,
+                                    spreadRadius: 4.0 * glowMultiplier,
+                                    offset: const Offset(-2.0, 0),
+                                  ),
+                                ],
+                                color: Theme.of(context).colorScheme.primary),
+                            child: CachedNetworkImage(
+                                width: 50,
+                                height: 50,
+                                color: Theme.of(context).colorScheme.surface,
+                                imageUrl: itemData['image'])),
+                        const SizedBox(height: 8),
+                        Text(
+                          itemData['title']!,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                itemData['title']!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                    ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                itemData['description'][0],
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                    ),
-                              ),
-                            ],
+                        Text(
+                          itemData['description']!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
+                          maxLines: 10,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   );
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text("Upcoming Events",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
               GridView.builder(
                 shrinkWrap: true,
@@ -446,7 +556,8 @@ class _HomePageState extends State<HomePage> {
                   return Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier),
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       border: Border.all(
                         color: Theme.of(context)
@@ -457,12 +568,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius:
+                                  BorderRadius.circular(8 * radiusMultiplier),
                               boxShadow: [
                                 BoxShadow(
                                   color: Theme.of(context)
@@ -473,8 +584,8 @@ class _HomePageState extends State<HomePage> {
                                                   Brightness.dark
                                               ? 0.3
                                               : 0.7),
-                                  blurRadius: 10.0,
-                                  spreadRadius: 4.0,
+                                  blurRadius: 10.0 * blurMultiplier,
+                                  spreadRadius: 4.0 * glowMultiplier,
                                   offset: const Offset(-2.0, 0),
                                 ),
                               ],
@@ -504,11 +615,13 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text("Latest Events",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text("Latest Posts",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
               GridView.builder(
                 shrinkWrap: true,
@@ -517,17 +630,18 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
-                  mainAxisExtent: 250,
+                  mainAxisExtent: 330,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
                 ),
-                itemCount: 3,
+                itemCount: 2,
                 itemBuilder: (context, index) {
-                  final itemData = latestEvents[index];
+                  final itemData = latestEvents[index + 1];
                   return Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier),
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
                       boxShadow: const [
                         BoxShadow(
@@ -544,69 +658,98 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: CachedNetworkImage(
-                                imageUrl: itemData['image'],
-                                width: 150,
-                                height: 200,
-                                fit: BoxFit.cover,
+                        ClipRRect(
+                          borderRadius:
+                              BorderRadius.circular(8 * radiusMultiplier),
+                          child: CachedNetworkImage(
+                            imageUrl: itemData['image'],
+                            height: 150,
+                            width: double.maxFinite,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                itemData['title']!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    itemData['title']!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface,
-                                        ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    itemData['description'],
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant,
-                                        ),
-                                  ),
-                                ],
+                              const SizedBox(height: 8),
+                              Text(
+                                itemData['description'],
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                               ),
-                            ),
-                          ],
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                margin: const EdgeInsets.only(top: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        8 * radiusMultiplier),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withOpacity(
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? 0.3
+                                                    : 0.7),
+                                        blurRadius: 10.0 * blurMultiplier,
+                                        spreadRadius: 4.0 * glowMultiplier,
+                                        offset: const Offset(-2.0, 0),
+                                      ),
+                                    ],
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
+                                child: Text(itemData['date'],
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.surface,
+                                    )),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   );
                 },
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text("Our Policies",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text("Top Students",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.primary)),
               ),
               GridView.builder(
                 shrinkWrap: true,
@@ -614,18 +757,27 @@ class _HomePageState extends State<HomePage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 10 / 6),
-                itemCount: ourPolicies.length,
+                  crossAxisCount: 1,
+                  mainAxisExtent: 200,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                ),
+                itemCount: topStudents.length,
                 itemBuilder: (context, index) {
-                  final itemData = ourPolicies[index];
+                  final itemData = topStudents[index];
                   return Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius:
+                          BorderRadius.circular(12 * radiusMultiplier),
                       color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
                       border: Border.all(
                         color: Theme.of(context)
                             .colorScheme
@@ -633,156 +785,64 @@ class _HomePageState extends State<HomePage> {
                             .withOpacity(0.1),
                       ),
                     ),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary
-                                        .withOpacity(
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? 0.3
-                                                : 0.7),
-                                    blurRadius: 10.0,
-                                    spreadRadius: 4.0,
-                                    offset: const Offset(-2.0, 0),
-                                  ),
-                                ],
-                                color: Theme.of(context).colorScheme.primary),
-                            child: CachedNetworkImage(
-                                imageUrl: itemData['image'])),
-                        const SizedBox(height: 8),
-                        Text(
-                          itemData['title']!,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          itemData['description']!,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurface,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: CachedNetworkImage(
+                            imageUrl: itemData['image'],
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.cover,
                           ),
-                          maxLines: 10,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                itemData['title']!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                itemData['description'][0],
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   );
                 },
               ),
-              // const Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-              //   child: Text("Campus Highlights",
-              //       style:
-              //           TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-              // ),
-              // if (instaData != null && instaData.isNotEmpty)
-              //   Padding(
-              //     padding: const EdgeInsets.all(20.0),
-              //     child: _buildInstaPosts(context, instaData),
-              //   )
-              // else
-              //   const SizedBox(
-              //       height: 200,
-              //       child: Center(child: CircularProgressIndicator()))
             ],
           ),
         );
       },
-    );
-  }
-
-  Widget _buildInstaPosts(BuildContext context, dynamic instaData) {
-    return SingleChildScrollView(
-      physics: const NeverScrollableScrollPhysics(),
-      child: MasonryGridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        itemCount: instaData.length,
-        itemBuilder: (context, index) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: Stack(
-              children: [
-                CachedNetworkImage(
-                  imageUrl: instaData[index]['image'],
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey[900]!,
-                    highlightColor: Colors.grey[700]!,
-                    child: Container(
-                      color: Colors.grey[400],
-                      height: 250, // Placeholder height
-                      width: double.infinity,
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.5),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      instaData[index]['title'],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black45,
-                            blurRadius: 8,
-                            offset: Offset(2, 2),
-                          ),
-                        ],
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
     );
   }
 }
