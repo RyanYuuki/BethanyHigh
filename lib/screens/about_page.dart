@@ -4,7 +4,38 @@ import 'package:provider/provider.dart';
 import 'package:school_app/data/api.dart';
 import 'package:school_app/screens/dynamic_pages/about.dart';
 import 'package:school_app/theme/provider.dart';
-import 'package:shimmer/shimmer.dart';
+
+Container glowingLogo(BuildContext context) {
+  final provider = Provider.of<ThemeProvider>(context);
+  return Container(
+    decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryFixed,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.primaryFixed.withOpacity(
+                Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.8),
+            blurRadius: 10.0,
+            spreadRadius: 4.0 * provider.glowMultiplier,
+            offset: const Offset(-2.0, 0),
+          ),
+        ]),
+    height: 60,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: CachedNetworkImage(
+              height: 60,
+              imageUrl:
+                  'https://bethanyinstitutions.edu.in///wp-content/uploads/2023/10/Bethany-Approved-Logo-07-scaled.webp',
+            )),
+        // const Spacer()
+      ],
+    ),
+  );
+}
 
 class AboutPage extends StatelessWidget {
   AboutPage({super.key});
@@ -174,84 +205,6 @@ class AboutPage extends StatelessWidget {
           Text(description),
         ],
       ),
-    );
-  }
-
-  Container glowingLogo(BuildContext context) {
-    final provider = Provider.of<ThemeProvider>(context, listen: false);
-    return Container(
-      margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-      decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryFixed,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.primaryFixed.withOpacity(
-                  Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.8),
-              blurRadius: 10.0,
-              spreadRadius: 4.0 * provider.glowMultiplier,
-              offset: const Offset(-2.0, 0),
-            ),
-          ]),
-      height: 60,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: CachedNetworkImage(
-                height: 60,
-                imageUrl:
-                    'https://bethanyinstitutions.edu.in///wp-content/uploads/2023/10/Bethany-Approved-Logo-07-scaled.webp',
-              )),
-          // const Spacer()
-        ],
-      ),
-    );
-  }
-
-  Column _buildInfoSegment(
-      String heading, String imgUrl, String description, BuildContext context) {
-    return Column(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: CachedNetworkImage(
-            imageUrl: imgUrl,
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: 250,
-            filterQuality: FilterQuality.high,
-            placeholder: (context, url) => Shimmer.fromColors(
-              baseColor: Theme.of(context).colorScheme.surface,
-              highlightColor: Theme.of(context).colorScheme.secondaryContainer,
-              child: Container(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-                height: 250,
-                width: double.infinity,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Text(heading,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-        ),
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            description,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ],
     );
   }
 }
