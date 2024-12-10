@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:school_app/data/api.dart';
+import 'package:school_app/theme/provider.dart';
 
 class About extends StatefulWidget {
   final String url;
@@ -87,6 +89,10 @@ class _AboutState extends State<About> {
   }
 
   Container _buildBody(BuildContext context, Map<String, dynamic> data) {
+    final provider = Provider.of<ThemeProvider>(context);
+    final radiusMultiplier = provider.radiusMultiplier;
+    final glowMultiplier = provider.glowMultiplier;
+    final blurMultiplier = provider.blurMultiplier;
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -101,28 +107,50 @@ class _AboutState extends State<About> {
           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
         ),
         borderRadius: BorderRadius.circular(10),
-        color: Theme.of(context).colorScheme.surfaceContainer,
+        color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(140),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: CachedNetworkImage(
             imageUrl: data['image'] ?? '',
-            height: 200,
+            height: 250,
             width: double.infinity,
             fit: BoxFit.cover,
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
         const SizedBox(height: 10),
-        ...data['body']
-            .map<Widget>((e) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: Text(
-                    e?.toString() ?? 'No description available.',
+        ...data['body'].map<Widget>((content) {
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(8 * radiusMultiplier),
+              boxShadow: [
+                BoxShadow(
+                  color: Theme.of(context).colorScheme.primaryFixedDim.withOpacity(
+                      Theme.of(context).brightness == Brightness.dark
+                          ? 0.3
+                          : 1),
+                  blurRadius: 10.0 * blurMultiplier,
+                  spreadRadius: 2.0 * glowMultiplier,
+                  offset: const Offset(-2.0, 0),
+                ),
+              ],
+              border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+              ),
+            ),
+            child: Text(
+              content,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    height: 1.5,
                   ),
-                ))
-            .toList()
+            ),
+          );
+        }).toList(),
       ]),
     );
   }
