@@ -77,7 +77,7 @@ class SettingsAbout extends StatelessWidget {
                                       'https://avatars.githubusercontent.com/u/108048963?s=400&u=7f67531c27c5ebbbcde943f9576a0bfdb98909c8&v=4'),
                                 ),
                                 title: "Developer",
-                                subtitle: "RyanYuuki",
+                                subtitle: "Rehan",
                                 trailing: IconButton(
                                   onPressed: () async {
                                     await launchUrlHelper(

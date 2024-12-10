@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+import 'package:provider/provider.dart';
 import 'package:school_app/screens/settings_page.dart';
+import 'package:school_app/theme/provider.dart';
 
 class CustomDrawer extends StatelessWidget {
   final int currentIndex;
@@ -88,8 +90,11 @@ class CustomDrawer extends StatelessWidget {
   Widget _buildDrawerItem(IconData icon, String title, int index,
       BuildContext context, IconData selectedIcon) {
     final isSelected = currentIndex == index;
-
+    final provider = Provider.of<ThemeProvider>(context);
+    final glowMultiplier = provider.glowMultiplier;
+    final blurMultiplier = provider.blurMultiplier;
     return Container(
+      clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -99,9 +104,9 @@ class CustomDrawer extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary.withOpacity(
                         Theme.of(context).brightness == Brightness.dark
                             ? 0.3
-                            : 0.6),
-                    blurRadius: 58.0,
-                    spreadRadius: 12.0,
+                            : 0.7),
+                    blurRadius: 58.0 * blurMultiplier,
+                    spreadRadius: 12.0 * glowMultiplier,
                     offset: const Offset(-2.0, 0),
                   ),
                 ]

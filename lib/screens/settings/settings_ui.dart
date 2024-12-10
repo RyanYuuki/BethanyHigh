@@ -3,6 +3,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
 import 'package:school_app/theme/provider.dart';
 import 'package:school_app/widget/custom_slider_tile.dart';
+import 'package:school_app/widget/custom_tile.dart';
 
 class SettingsUi extends StatefulWidget {
   const SettingsUi({super.key});
@@ -86,6 +87,14 @@ class _SettingsUiState extends State<SettingsUi> {
                     fontWeight: FontWeight.bold,
                   )),
               const SizedBox(height: 10),
+              const SizedBox(height: 20),
+              CustomTile(
+                icon: HugeIcons.strokeRoundedTextFont,
+                title: "Font",
+                description: "Change Font of the entire app",
+                onTap: () {},
+              ),
+              const SizedBox(height: 10),
               CustomSliderTile(
                 icon: HugeIcons.strokeRoundedLighthouse,
                 title: "Glow Multiplier",
@@ -118,4 +127,109 @@ class _SettingsUiState extends State<SettingsUi> {
       ),
     );
   }
+
+  // void showColorSelectionDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return Dialog(
+  //         backgroundColor: Theme.of(context).colorScheme.surface,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(16),
+  //         ),
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(16.0),
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.min,
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               const Text(
+  //                 'Choose Fonts',
+  //                 style: TextStyle(fontWeight: FontWeight.bold),
+  //               ),
+  //               const SizedBox(height: 16),
+  //               SizedBox(
+  //                 height: MediaQuery.of(context).size.height * 0.7,
+  //                 child: ListView.builder(
+  //                   shrinkWrap: true,
+  //                   itemCount: colorList.length,
+  //                   itemBuilder: (context, index) {
+  //                     Color color = colorList[index];
+  //                     bool isSelected = index == selectedColorIndex;
+
+  //                     return Container(
+  //                       margin: const EdgeInsets.only(bottom: 7),
+  //                       child: ListTileWithCheckMark(
+  //                         color: color,
+  //                         active: isSelected,
+  //                         leading: CircleAvatar(
+  //                           backgroundColor: color,
+  //                           radius: 12,
+  //                         ),
+  //                         title: colorKeys[index],
+  //                         onTap: () {
+  //                           handleColorSelection(index);
+  //                         },
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 16),
+  //               Padding(
+  //                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+  //                 child: Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                   children: [
+  //                     Expanded(
+  //                       child: ElevatedButton(
+  //                         onPressed: () {
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                         style: ElevatedButton.styleFrom(
+  //                           elevation: 0,
+  //                           shape: RoundedRectangleBorder(
+  //                               borderRadius: BorderRadius.circular(30)),
+  //                           backgroundColor:
+  //                               Theme.of(context).colorScheme.surfaceContainer,
+  //                         ),
+  //                         child: Text('Cancel',
+  //                             style: TextStyle(
+  //                                 color: Theme.of(context).colorScheme.primary,
+  //                                 fontSize: 14,
+  //                                 fontFamily: "LexendDeca",
+  //                                 fontWeight: FontWeight.bold)),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(width: 10),
+  //                     Expanded(
+  //                       child: ElevatedButton(
+  //                         onPressed: () {
+  //                           Navigator.of(context).pop();
+  //                         },
+  //                         style: ElevatedButton.styleFrom(
+  //                           elevation: 0,
+  //                           shape: RoundedRectangleBorder(
+  //                               borderRadius: BorderRadius.circular(30)),
+  //                           backgroundColor:
+  //                               Theme.of(context).colorScheme.primaryFixed,
+  //                         ),
+  //                         child: const Text('Confirm',
+  //                             style: TextStyle(
+  //                                 fontSize: 14,
+  //                                 fontFamily: "LexendDeca",
+  //                                 color: Colors.black,
+  //                                 fontWeight: FontWeight.bold)),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }

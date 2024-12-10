@@ -1,10 +1,9 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:iconly/iconly.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +48,6 @@ class _EventsPageState extends State<EventsPage> {
     setState(() {
       currentLayout = EventLayout.values[newIndex];
     });
-    log(currentLayout.name);
   }
 
   Icon handleLayoutIcon() {
@@ -115,6 +113,7 @@ class _EventsPageState extends State<EventsPage> {
                     scrollDirection: Axis.horizontal,
                   ),
                   items: [events[0], events[1], events[2]].map<Widget>((i) {
+                    final random = Random().nextInt(10000);
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -126,19 +125,26 @@ class _EventsPageState extends State<EventsPage> {
                                     builder: (context) => EventPage(
                                           eventLink: i['link'],
                                           eventName: i['title'],
+                                          heroTag: '${i['title']}-$random',
+                                          imageUrl: i['image'],
                                         )));
                           },
                           child: Container(
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 10),
-                              clipBehavior: Clip.antiAlias,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12)),
-                              child: CachedNetworkImage(
-                                imageUrl: i['image'],
-                                height: 150,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
+                              child: Hero(
+                                tag: '${i['title']}-$random',
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                    imageUrl: i['image'],
+                                    height: 150,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               )),
                         ),
                         const SizedBox(height: 10),
@@ -311,12 +317,15 @@ class _EventsPageState extends State<EventsPage> {
 }
 
 _buildEventImageTile(BuildContext context, dynamic event, int index) {
+  final random = Random().nextInt(10000);
   return GestureDetector(
     onTap: () {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => EventPage(
+                    heroTag: '${event['title']}-$random',
+                    imageUrl: event['image'],
                     eventLink: event['link'],
                     eventName: event['title'],
                   )));
@@ -329,14 +338,17 @@ _buildEventImageTile(BuildContext context, dynamic event, int index) {
       padding: const EdgeInsets.fromLTRB(10, 5, 5, 10),
       child: Column(
         children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: CachedNetworkImage(
-                imageUrl: event['image'],
-                width: double.infinity,
-                height: 150,
-                fit: BoxFit.cover,
-              )),
+          Hero(
+            tag: '${event['title']}-$random',
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  imageUrl: event['image'],
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                )),
+          ),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -383,6 +395,7 @@ _buildEventImageTile(BuildContext context, dynamic event, int index) {
 }
 
 _buildEventTile(BuildContext context, dynamic event, int index) {
+  final random = Random().nextInt(10000);
   return GestureDetector(
     onTap: () {
       Navigator.push(
@@ -391,6 +404,8 @@ _buildEventTile(BuildContext context, dynamic event, int index) {
               builder: (context) => EventPage(
                     eventLink: event['link'],
                     eventName: event['title'],
+                    heroTag: '${event['title']}-$random',
+                    imageUrl: event['image'],
                   )));
     },
     child: Container(
@@ -439,6 +454,8 @@ _buildEventTile(BuildContext context, dynamic event, int index) {
                         builder: (context) => EventPage(
                               eventLink: event['link'],
                               eventName: event['title'],
+                              heroTag: '',
+                              imageUrl: '',
                             )));
               },
               icon: const Icon(IconlyBold.arrow_right))
