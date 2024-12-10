@@ -36,3 +36,5 @@ String capitalize(String word) {
   String truncatedWord = firstLetter + word.substring(1, word.length);
   return truncatedWord;
 }
+
+List<String> fontsList = ["Poppins", "Lexend Deca"];
