@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart' show PackageInfo;
-import 'package:school_app/widget/about_page_deps.dart';
+import 'package:bethany/widget/about_page_deps.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> launchUrlHelper(String link) async {

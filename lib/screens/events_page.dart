@@ -7,8 +7,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:iconly/iconly.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/providers/data_provider.dart';
-import 'package:school_app/screens/dynamic_pages/event.dart';
+import 'package:bethany/providers/data_provider.dart';
+import 'package:bethany/screens/dynamic_pages/event.dart';
+import 'package:bethany/widget/platform_builder.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventsPage extends StatefulWidget {
@@ -81,7 +82,7 @@ class _EventsPageState extends State<EventsPage> {
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            margin:  EdgeInsets.symmetric(horizontal: getResponsiveSize(context, mobileSize: 10, dektopSize: 40)),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 color: Theme.of(context).colorScheme.surfaceContainer),
@@ -99,7 +100,8 @@ class _EventsPageState extends State<EventsPage> {
                 const SizedBox(height: 10),
                 CarouselSlider(
                   options: CarouselOptions(
-                    height: 270,
+                    height: getResponsiveSize(context,
+                        mobileSize: 270, dektopSize: 430),
                     viewportFraction: 1,
                     initialPage: 0,
                     enableInfiniteScroll: true,
@@ -140,7 +142,8 @@ class _EventsPageState extends State<EventsPage> {
                                   borderRadius: BorderRadius.circular(12),
                                   child: CachedNetworkImage(
                                     imageUrl: i['image'],
-                                    height: 150,
+                                    height: getResponsiveSize(context,
+                                        mobileSize: 150, dektopSize: 350),
                                     width: double.infinity,
                                     fit: BoxFit.cover,
                                   ),
@@ -177,7 +180,7 @@ class _EventsPageState extends State<EventsPage> {
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(12)),
-            margin: const EdgeInsets.symmetric(horizontal: 10),
+            margin:  EdgeInsets.symmetric(horizontal: getResponsiveSize(context, mobileSize: 10, dektopSize: 40)),
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,8 +244,8 @@ class _EventsPageState extends State<EventsPage> {
     return MasonryGridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: getResponsiveValue(context, mobileValue: 2, desktopValue: 4),
       ),
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
@@ -345,7 +348,7 @@ _buildEventImageTile(BuildContext context, dynamic event, int index) {
                 child: CachedNetworkImage(
                   imageUrl: event['image'],
                   width: double.infinity,
-                  height: 150,
+                  height: getResponsiveSize(context, mobileSize: 150, dektopSize: 300),
                   fit: BoxFit.cover,
                 )),
           ),

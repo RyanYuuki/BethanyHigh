@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:school_app/data/api.dart';
-import 'package:school_app/screens/about_page.dart';
-import 'package:school_app/widget/custom_checkbox_tile.dart';
-import 'package:school_app/widget/custom_snackbar.dart';
+import 'package:provider/provider.dart';
+import 'package:bethany/data/api.dart';
+import 'package:bethany/screens/about_page.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/custom_checkbox_tile.dart';
+import 'package:bethany/widget/custom_snackbar.dart';
+import 'package:bethany/widget/platform_builder.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -16,6 +20,9 @@ class _ContactPageState extends State<ContactPage> {
   Future<dynamic>? data;
   int? selectedDepIndex;
   bool isDepSelected = false;
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -24,10 +31,6 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController fullNameController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController messageController = TextEditingController();
-
     return FutureBuilder<dynamic>(
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -46,7 +49,10 @@ class _ContactPageState extends State<ContactPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: EdgeInsets.all(getResponsiveSize(context,
+                      mobileSize: 10, dektopSize: 20)),
+                  margin: EdgeInsets.all(getResponsiveSize(context,
+                      mobileSize: 0, dektopSize: 20)),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Theme.of(context).colorScheme.surfaceContainer),
@@ -68,6 +74,58 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 
+  Widget _buildGlowingInput(
+      BuildContext context, TextEditingController controller,
+      {int maxLines = 1, required String label, required IconData icon}) {
+    final provider = Provider.of<ThemeProvider>(context);
+    final glowMultiplier = provider.glowMultiplier;
+    final blurMultiplier = provider.blurMultiplier;
+
+    String? validator(String? value) {
+      if (value == null || value.isEmpty) {
+        return '$label is required';
+      }
+      if (label == "Email") {
+        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+        if (!emailRegex.hasMatch(value)) {
+          return 'Please enter a valid email address';
+        }
+      }
+      return null;
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(
+                Theme.of(context).brightness == Brightness.dark ? 1 : 0.8),
+            blurRadius: 10.0 * blurMultiplier,
+            spreadRadius: 2.0 * glowMultiplier,
+            offset: const Offset(-2.0, 0),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          suffixIcon: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                icon,
+                color: Theme.of(context).colorScheme.primary,
+                size: 28,
+              )),
+          fillColor: Theme.of(context).colorScheme.secondaryContainer,
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        maxLines: maxLines,
+        validator: validator,
+      ),
+    );
+  }
+
   void onDepChange(int index) {
     setState(() {
       selectedDepIndex = index;
@@ -85,7 +143,9 @@ class _ContactPageState extends State<ContactPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Padding(
+            child: Container(
+              width: getResponsiveValue(context,
+                  mobileValue: null, desktopValue: 500.0),
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -184,63 +244,54 @@ class _ContactPageState extends State<ContactPage> {
   }
 
   Widget _buildForm(
-      BuildContext context,
-      TextEditingController fullNameController,
-      TextEditingController emailController,
-      TextEditingController messageController,
-      dynamic deps) {
+    BuildContext context,
+    TextEditingController fullNameController,
+    TextEditingController emailController,
+    TextEditingController messageController,
+    dynamic deps,
+  ) {
+    bool validateFields() {
+      if (fullNameController.text.isEmpty) {
+        showToast(context, 'Full Name cannot be empty.');
+        return false;
+      }
+
+      final email = emailController.text;
+      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+      if (email.isEmpty) {
+        showToast(context, 'Email cannot be empty.');
+        return false;
+      } else if (!emailRegex.hasMatch(email)) {
+        showToast(context, 'Please enter a valid email address.');
+        return false;
+      }
+
+      if (messageController.text.isEmpty) {
+        showToast(context, 'Message cannot be empty.');
+        return false;
+      }
+
+      if (!isDepSelected) {
+        showToast(context, 'Please select a department.');
+        return false;
+      }
+
+      return true;
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: fullNameController,
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  HugeIcons.strokeRoundedUser,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 28,
-                )),
-            fillColor: Theme.of(context).colorScheme.secondaryContainer,
-            labelText: 'Full Name',
-            border: const OutlineInputBorder(),
-          ),
-        ),
+        _buildGlowingInput(context, fullNameController,
+            label: "Full Name", icon: HugeIcons.strokeRoundedUser),
         const SizedBox(height: 15),
-        TextField(
-          controller: emailController,
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  HugeIcons.strokeRoundedMail01,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 28,
-                )),
-            fillColor: Theme.of(context).colorScheme.secondaryContainer,
-            labelText: 'Email',
-            border: const OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.emailAddress,
-        ),
+        _buildGlowingInput(context, emailController,
+            label: "Email", icon: HugeIcons.strokeRoundedMail01),
         const SizedBox(height: 15),
-        TextField(
-          controller: messageController,
-          decoration: InputDecoration(
-            suffixIcon: IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  HugeIcons.strokeRoundedMessage01,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 28,
-                )),
-            fillColor: Theme.of(context).colorScheme.secondaryContainer,
-            labelText: 'Message',
-            border: const OutlineInputBorder(),
-          ),
-          maxLines: 2,
-        ),
+        _buildGlowingInput(context, messageController,
+            label: "Message",
+            icon: HugeIcons.strokeRoundedMessage02,
+            maxLines: 2),
         const SizedBox(height: 15),
         ListTileWithCheckMark(
           leading: const Icon(HugeIcons.strokeRoundedBuilding01),
@@ -270,22 +321,20 @@ class _ContactPageState extends State<ContactPage> {
           ]),
           child: ElevatedButton(
             onPressed: () {
-              final fullName = fullNameController.text;
-              final email = emailController.text;
-              final message = messageController.text;
-
-              if (fullName.isEmpty || email.isEmpty || message.isEmpty) {
-                showToast(context, 'Please fill out all fields.');
-              } else if (!isDepSelected) {
-                showToast(
-                    context, "Please select a department before proceeding");
-              } else {
+              if (validateFields()) {
+                sendAdmissionMail(
+                  senderEmail: emailController.text,
+                  senderName: fullNameController.text,
+                  senderMessage: messageController.text,
+                  recipientEmail: deps[selectedDepIndex]['email'] ??
+                      'school@bethanyinstitutions.edu.in',
+                );
                 showToast(context, 'Message sent successfully!');
               }
             },
             style: ElevatedButton.styleFrom(
               fixedSize: const Size(double.maxFinite, 50),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.primaryFixed,
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
             ),
             child: const Text(
@@ -298,5 +347,40 @@ class _ContactPageState extends State<ContactPage> {
         ),
       ],
     );
+  }
+}
+
+Future<void> sendAdmissionMail({
+  required String senderEmail,
+  required String senderName,
+  required String senderMessage,
+  required String recipientEmail,
+}) async {
+  final subject = "Admission Inquiry from $senderName";
+  final body = """
+Dear Admissions Team,
+
+My name is $senderName. I am reaching out to inquire about the admission process.
+
+$senderMessage
+
+Looking forward to hearing from you soon.
+
+Best regards,
+$senderName
+$senderEmail
+""";
+
+  final Email email = Email(
+    body: body,
+    subject: subject,
+    recipients: [recipientEmail],
+    isHTML: false,
+  );
+
+  try {
+    await FlutterEmailSender.send(email);
+  } catch (e) {
+    throw 'Could not send email: $e';
   }
 }

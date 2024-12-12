@@ -5,11 +5,12 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:iconly/iconly.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/data/constants.dart';
-import 'package:school_app/theme/provider.dart';
-import 'package:school_app/widget/custom_checkbox_tile.dart';
-import 'package:school_app/widget/custom_switch_tile.dart';
-import 'package:school_app/widget/custom_tile.dart';
+import 'package:bethany/data/constants.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/custom_checkbox_tile.dart';
+import 'package:bethany/widget/custom_switch_tile.dart';
+import 'package:bethany/widget/custom_tile.dart';
+import 'package:bethany/widget/platform_builder.dart';
 
 class SettingsTheme extends StatefulWidget {
   const SettingsTheme({super.key});
@@ -270,7 +271,9 @@ class _SettingsThemeState extends State<SettingsTheme> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Padding(
+          child: Container(
+            width: getResponsiveValue(context,
+                mobileValue: null, desktopValue: 500.0),
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -371,7 +374,9 @@ class _SettingsThemeState extends State<SettingsTheme> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Padding(
+          child: Container(
+            width: getResponsiveValue(context,
+                mobileValue: null, desktopValue: 500.0),
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -477,7 +482,14 @@ class _SettingsThemeState extends State<SettingsTheme> {
               brightness: theme['label'] == "Dark"
                   ? Brightness.dark
                   : Brightness.light);
+          final ColorScheme lightScheme = ColorScheme.fromSeed(
+              seedColor: Theme.of(context).colorScheme.primary,
+              brightness: Brightness.light);
+          final ColorScheme darkScheme = ColorScheme.fromSeed(
+              seedColor: Theme.of(context).colorScheme.primary,
+              brightness: Brightness.dark);
           bool isSelected = themeMode == theme['label'];
+          bool isSystem = theme['label'] == "System";
           return GestureDetector(
             onTap: () {
               handleThemeMode(theme['label']);
@@ -487,7 +499,9 @@ class _SettingsThemeState extends State<SettingsTheme> {
                 Container(
                   margin: const EdgeInsets.only(right: 10),
                   height: 150,
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: getResponsiveSize(context,
+                      mobileSize: MediaQuery.of(context).size.width / 2,
+                      dektopSize: 300),
                   clipBehavior: Clip.antiAlias,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -512,18 +526,39 @@ class _SettingsThemeState extends State<SettingsTheme> {
                               width: 300,
                               padding: const EdgeInsets.only(left: 10, top: 5),
                               decoration: BoxDecoration(
-                                color: theme['color'],
+                                color: isSystem ? null : colorScheme.surface,
                                 borderRadius: BorderRadius.circular(12),
+                                gradient: isSystem
+                                    ? LinearGradient(colors: [
+                                        lightScheme.surface,
+                                        darkScheme.surface
+                                      ], stops: const [
+                                        0.5,
+                                        0.5
+                                      ])
+                                    : null,
                               ),
                               alignment: Alignment.center,
                               child: Container(
+                                margin: const EdgeInsets.only(right: 10),
                                 height: 50,
                                 width: 100,
-                                alignment: Alignment.topLeft,
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                    color: colorScheme.surfaceContainer,
-                                    borderRadius: BorderRadius.circular(5)),
+                                  color: isSystem
+                                      ? null
+                                      : colorScheme.surfaceContainer,
+                                  borderRadius: BorderRadius.circular(5),
+                                  gradient: isSystem
+                                      ? LinearGradient(colors: [
+                                          lightScheme.surfaceContainer,
+                                          darkScheme.surfaceContainer
+                                        ], stops: const [
+                                          0.5,
+                                          0.5
+                                        ])
+                                      : null,
+                                ),
                                 child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
@@ -538,9 +573,29 @@ class _SettingsThemeState extends State<SettingsTheme> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary),
+                                              color: isSystem
+                                                  ? lightScheme.primary
+                                                  : colorScheme.primary),
+                                        ),
+                                        Container(
+                                          width: 20,
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: isSystem
+                                                ? null
+                                                : colorScheme.secondary,
+                                            gradient: isSystem
+                                                ? LinearGradient(colors: [
+                                                    lightScheme.secondary,
+                                                    darkScheme.secondary
+                                                  ], stops: const [
+                                                    0.5,
+                                                    0.5
+                                                  ])
+                                                : null,
+                                          ),
                                         ),
                                         Container(
                                           width: 20,
@@ -548,19 +603,11 @@ class _SettingsThemeState extends State<SettingsTheme> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                        ),
-                                        Container(
-                                          width: 20,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondaryContainer),
+                                              color: isSystem
+                                                  ? darkScheme
+                                                      .secondaryContainer
+                                                  : colorScheme
+                                                      .secondaryContainer),
                                         ),
                                       ],
                                     ),
@@ -574,9 +621,29 @@ class _SettingsThemeState extends State<SettingsTheme> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary),
+                                              color: isSystem
+                                                  ? lightScheme.onPrimary
+                                                  : colorScheme.onPrimary),
+                                        ),
+                                        Container(
+                                          width: 20,
+                                          height: 10,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: isSystem
+                                                ? null
+                                                : colorScheme.tertiary,
+                                            gradient: isSystem
+                                                ? LinearGradient(colors: [
+                                                    lightScheme.tertiary,
+                                                    darkScheme.tertiary
+                                                  ], stops: const [
+                                                    0.5,
+                                                    0.5
+                                                  ])
+                                                : null,
+                                          ),
                                         ),
                                         Container(
                                           width: 20,
@@ -584,19 +651,10 @@ class _SettingsThemeState extends State<SettingsTheme> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(12),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiary),
-                                        ),
-                                        Container(
-                                          width: 20,
-                                          height: 10,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primaryFixedDim),
+                                              color: isSystem
+                                                  ? darkScheme.primaryFixedDim
+                                                  : colorScheme
+                                                      .primaryFixedDim),
                                         ),
                                       ],
                                     ),
@@ -681,8 +739,8 @@ class _SettingsThemeState extends State<SettingsTheme> {
       scrollDirection: Axis.vertical,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: colorMap.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: getResponsiveCrossAxisCount(context),
           mainAxisExtent: 150,
           crossAxisSpacing: 10,
           mainAxisSpacing: 10),

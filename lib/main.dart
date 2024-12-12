@@ -4,12 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/providers/data_provider.dart';
-import 'package:school_app/screens/about_page.dart';
-import 'package:school_app/screens/contact_page.dart';
-import 'package:school_app/screens/events_page.dart';
-import 'package:school_app/theme/provider.dart';
-import 'package:school_app/widget/drawer.dart';
+import 'package:bethany/providers/data_provider.dart';
+import 'package:bethany/screens/about_page.dart';
+import 'package:bethany/screens/contact_page.dart';
+import 'package:bethany/screens/events_page.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/drawer.dart';
 import 'screens/home_page.dart';
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {

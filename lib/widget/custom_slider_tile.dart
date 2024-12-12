@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/theme/provider.dart';
-import 'package:school_app/widget/slider_semantics.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/slider_semantics.dart';
 
 class CustomSliderTile extends StatelessWidget {
   final IconData icon;

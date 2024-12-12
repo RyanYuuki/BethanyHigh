@@ -38,3 +38,4 @@ String capitalize(String word) {
 }
 
 List<String> fontsList = ["Poppins", "Lexend Deca"];
+const maxMobileWidth = 500;

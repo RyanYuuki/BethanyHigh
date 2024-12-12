@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:school_app/screens/settings/settings_about.dart';
-import 'package:school_app/screens/settings/settings_theme.dart';
-import 'package:school_app/screens/settings/settings_ui.dart';
-import 'package:school_app/widget/custom_tile.dart';
+import 'package:bethany/screens/settings/settings_about.dart';
+import 'package:bethany/screens/settings/settings_theme.dart';
+import 'package:bethany/screens/settings/settings_ui.dart';
+import 'package:bethany/widget/custom_tile.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});

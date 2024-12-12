@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/screens/settings/settings_about.dart';
+import 'package:bethany/screens/settings/settings_about.dart';
 
 class ProfileInfo extends StatelessWidget {
   final String username;

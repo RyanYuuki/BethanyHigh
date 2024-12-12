@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/data/api.dart';
-import 'package:school_app/screens/dynamic_pages/about.dart';
-import 'package:school_app/theme/provider.dart';
+import 'package:bethany/data/api.dart';
+import 'package:bethany/screens/dynamic_pages/about.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/platform_builder.dart';
 
 Container glowingLogo(BuildContext context) {
   final provider = Provider.of<ThemeProvider>(context);
@@ -88,7 +89,10 @@ class AboutPage extends StatelessWidget {
 
   Widget mainSection(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(
+          getResponsiveSize(context, mobileSize: 10, dektopSize: 20)),
+      margin: EdgeInsets.all(
+          getResponsiveSize(context, mobileSize: 0, dektopSize: 20)),
       decoration: BoxDecoration(
           boxShadow: const [
             BoxShadow(
@@ -111,8 +115,9 @@ class AboutPage extends StatelessWidget {
           GridView.builder(
               shrinkWrap: true,
               itemCount: _pages.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getResponsiveCrossAxisCount(context,
+                      baseColumns: 2, maxColumns: 6, tabletItemWidth: 400),
                   mainAxisExtent: 70,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10),
@@ -141,13 +146,9 @@ class AboutPage extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondaryContainer,
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondaryContainer
-                  .withOpacity(Theme.of(context).brightness == Brightness.dark
-                      ? 0.3
-                      : 0.7),
-              blurRadius: 10.0,
+              color: Theme.of(context).colorScheme.primaryFixed.withOpacity(
+                  Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.7),
+              blurRadius: 50.0,
               spreadRadius: 2.0,
               offset: const Offset(-2.0, 0),
             ),
@@ -169,7 +170,10 @@ class AboutPage extends StatelessWidget {
   Container aboutTile(
       BuildContext context, String title, String description, String image) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(
+          getResponsiveSize(context, mobileSize: 10, dektopSize: 20)),
+      margin: EdgeInsets.all(
+          getResponsiveSize(context, mobileSize: 0, dektopSize: 20)),
       decoration: BoxDecoration(
           boxShadow: const [
             BoxShadow(
@@ -197,7 +201,8 @@ class AboutPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: CachedNetworkImage(
                   imageUrl: image,
-                  height: 200,
+                  height: getResponsiveSize(context,
+                      mobileSize: 200, dektopSize: 400),
                   width: double.infinity,
                   fit: BoxFit.cover,
                 )),

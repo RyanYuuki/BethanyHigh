@@ -133,10 +133,8 @@ Future<dynamic> fetchHomePage() async {
         var description = '';
         if (policiesSelector.indexOf(el) == policiesSelector.length - 1) {
           description = el.querySelectorAll(".et_pb_text_inner")[1].text;
-          log("true - $description");
         } else {
           description = el.querySelector(".et_pb_text_inner p")!.text;
-          log(description);
         }
 
         var imgUrl =
@@ -149,15 +147,15 @@ Future<dynamic> fetchHomePage() async {
           '.et_pb_row.et_pb_row_28 .n2-ss-slide-background-image');
       var departmentImages = [];
       for (var container in imageContainers) {
-        var sourceTags = container.querySelectorAll('source');
+        var sourceTags = container.querySelectorAll('img');
         for (var source in sourceTags) {
           final index = sourceTags.indexOf(source);
           if (index == 0 || index == 4 || index == 8 || index == 12) {
-            departmentImages.add("https:${source.attributes['srcset']}");
+            departmentImages.add("https:${source.attributes['src']}");
           }
         }
       }
-
+      log(departmentImages.toString());
       data = {
         "smallData": smallData,
         "events": posts,
@@ -168,7 +166,6 @@ Future<dynamic> fetchHomePage() async {
         "policies": policies,
         "departmentImages": departmentImages
       };
-      log(policies.toString());
       return data;
     } else {
       log('Failed to load page: ${response.statusCode}');
@@ -212,7 +209,7 @@ Future<dynamic> fetchEvents() async {
         return {
           'title': title,
           'link': url,
-          'image': imageUrl,
+          'image': imageUrl.replaceAll("-400x250", ""),
           'author': author,
           'date': date,
           'description': description,
@@ -221,7 +218,6 @@ Future<dynamic> fetchEvents() async {
 
       posts
           .removeWhere((element) => element['title']!.contains("Top Achiever"));
-      log(posts.toString());
       return posts;
     } else {
       log('Failed to load webpage: ${response.statusCode}');
@@ -259,9 +255,15 @@ Future<dynamic> fetchEventData(String url) async {
     final storyElements = document.querySelectorAll(
         '.et_pb_module.et_pb_post_content.et_pb_post_content_0_tb_body p span, i span, p');
     var paragraphs = storyElements
-        .map((e) => e.text.trim())
+        .map((el) => el.text.trim())
         .where((text) => text.isNotEmpty)
         .where((text) => containsMostlyEnglishText(text))
+        .map((text) {
+          final strippedText = stripHtmlTags(text);
+          if (strippedText.isNotEmpty) return strippedText;
+          return null;
+        })
+        .whereType<String>()
         .toList();
     if (paragraphs.isEmpty ||
         (paragraphs.length < 5 &&
@@ -272,6 +274,12 @@ Future<dynamic> fetchEventData(String url) async {
           .map((el) => el.text.trim())
           .where((text) => text.isNotEmpty)
           .where((text) => containsMostlyEnglishText(text))
+          .map((text) {
+            final strippedText = stripHtmlTags(text);
+            if (strippedText.isNotEmpty) return strippedText;
+            return null;
+          })
+          .whereType<String>()
           .toList();
     }
     final data = {
@@ -289,9 +297,14 @@ Future<dynamic> fetchEventData(String url) async {
       'institution': institutionName,
       'body': paragraphs,
     };
-    log(data.toString());
     return data;
   }
+}
+
+String stripHtmlTags(String htmlString) {
+  final RegExp htmlTagRegExp =
+      RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
+  return htmlString.replaceAll(htmlTagRegExp, '').trim();
 }
 
 Future<dynamic> fetchAboutDataByUrl(String url) async {
@@ -300,10 +313,12 @@ Future<dynamic> fetchAboutDataByUrl(String url) async {
 
   if (resp.statusCode == 200) {
     var document = parse(resp.data);
-    var body = document
-        .querySelectorAll(".et_pb_text_inner p")
-        .map((el) => el.text.trim())
-        .toList();
+    var body = document.querySelectorAll(".et_pb_text_inner p").map((el) {
+      if (el.text.trim().isNotEmpty) {
+        return el.text.trim();
+      }
+    }).toList();
+    body = body.where((el) => el != null && el != "").toList();
     var image = document
         .querySelector(".et_pb_module.et_pb_image.et_pb_image_0 img")!
         .attributes['data-src'];

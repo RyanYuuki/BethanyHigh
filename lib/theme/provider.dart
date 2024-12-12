@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:hive/hive.dart';
-import 'package:school_app/data/constants.dart';
-import 'package:school_app/theme/themes.dart';
+import 'package:bethany/data/constants.dart';
+import 'package:bethany/theme/themes.dart';
 
 class ThemeProvider extends ChangeNotifier {
   bool isLightMode;
@@ -129,25 +129,18 @@ class ThemeProvider extends ChangeNotifier {
             colorScheme: ColorScheme.fromSeed(
                 seedColor: _seedColor,
                 brightness: Brightness.light,
+                surface: isOled ? Colors.white : null,
                 dynamicSchemeVariant:
                     dynamicSchemeVariantList[selectedVariantIndex]),
           )
-        : isOled
-            ? AppTheme.darkTheme.copyWith(
-                colorScheme: ColorScheme.fromSeed(
-                    seedColor: _seedColor,
-                    brightness: Brightness.dark,
-                    surface: Colors.black,
-                    dynamicSchemeVariant:
-                        dynamicSchemeVariantList[selectedVariantIndex]),
-              )
-            : AppTheme.darkTheme.copyWith(
-                colorScheme: ColorScheme.fromSeed(
-                    seedColor: _seedColor,
-                    brightness: Brightness.dark,
-                    dynamicSchemeVariant:
-                        dynamicSchemeVariantList[selectedVariantIndex]),
-              );
+        : AppTheme.darkTheme.copyWith(
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: _seedColor,
+                brightness: Brightness.dark,
+                surface: isOled ? Colors.black : null,
+                dynamicSchemeVariant:
+                    dynamicSchemeVariantList[selectedVariantIndex]),
+          );
     notifyListeners();
   }
 }

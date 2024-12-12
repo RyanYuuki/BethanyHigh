@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/data/api.dart';
-import 'package:school_app/theme/provider.dart';
+import 'package:bethany/data/api.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/platform_builder.dart';
 
 class About extends StatefulWidget {
   final String url;
@@ -49,7 +50,10 @@ class _AboutState extends State<About> {
         if (snapshot.hasData && snapshot.data != null) {
           return Scaffold(
             body: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+              padding: EdgeInsets.symmetric(
+                  horizontal: getResponsiveSize(context,
+                      mobileSize: 10, dektopSize: 30),
+                  vertical: 40),
               children: [
                 Row(
                   children: [
@@ -94,7 +98,8 @@ class _AboutState extends State<About> {
     final glowMultiplier = provider.glowMultiplier;
     final blurMultiplier = provider.blurMultiplier;
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(
+          getResponsiveSize(context, mobileSize: 10, dektopSize: 20)),
       decoration: BoxDecoration(
         boxShadow: const [
           BoxShadow(
@@ -114,7 +119,8 @@ class _AboutState extends State<About> {
           borderRadius: BorderRadius.circular(10),
           child: CachedNetworkImage(
             imageUrl: data['image'] ?? '',
-            height: 250,
+            height:
+                getResponsiveSize(context, mobileSize: 250, dektopSize: 400),
             width: double.infinity,
             fit: BoxFit.cover,
             errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -123,6 +129,7 @@ class _AboutState extends State<About> {
         const SizedBox(height: 10),
         ...data['body'].map<Widget>((content) {
           return Container(
+            width: double.infinity,
             margin: const EdgeInsets.symmetric(vertical: 8),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -130,10 +137,13 @@ class _AboutState extends State<About> {
               borderRadius: BorderRadius.circular(8 * radiusMultiplier),
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).colorScheme.primaryFixedDim.withOpacity(
-                      Theme.of(context).brightness == Brightness.dark
-                          ? 0.3
-                          : 1),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primaryFixedDim
+                      .withOpacity(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? 0.3
+                              : 1),
                   blurRadius: 10.0 * blurMultiplier,
                   spreadRadius: 2.0 * glowMultiplier,
                   offset: const Offset(-2.0, 0),

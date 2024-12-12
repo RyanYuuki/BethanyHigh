@@ -2,8 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/screens/settings_page.dart';
-import 'package:school_app/theme/provider.dart';
+import 'package:bethany/screens/settings_page.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/platform_builder.dart';
 
 class CustomDrawer extends StatelessWidget {
   final int currentIndex;
@@ -19,7 +20,7 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      width: MediaQuery.of(context).size.width * 0.5,
+      width: getResponsiveSize(context, mobileSize: MediaQuery.of(context).size.width * 0.5, dektopSize: MediaQuery.of(context).size.width * 0.2),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 25, 0, 15),
         child: Column(

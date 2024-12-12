@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/theme/provider.dart';
+import 'package:bethany/theme/provider.dart';
 
 class CustomSlider extends StatefulWidget {
   final double min;

@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/data/api.dart';
-import 'package:school_app/theme/provider.dart';
+import 'package:bethany/data/api.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/platform_builder.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EventPage extends StatefulWidget {
@@ -37,12 +38,6 @@ class _EventPageState extends State<EventPage> {
     });
   }
 
-  String stripHtmlTags(String htmlString) {
-    final RegExp htmlTagRegExp =
-        RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
-    return htmlString.replaceAll(htmlTagRegExp, '').trim();
-  }
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ThemeProvider>(context);
@@ -53,7 +48,10 @@ class _EventPageState extends State<EventPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 40),
+        padding: EdgeInsets.symmetric(
+            horizontal:
+                getResponsiveSize(context, mobileSize: 10, dektopSize: 30),
+            vertical: 40),
         children: [
           Row(
             children: [
@@ -76,7 +74,8 @@ class _EventPageState extends State<EventPage> {
           ),
           const SizedBox(height: 30),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: EdgeInsets.all(
+                getResponsiveSize(context, mobileSize: 10, dektopSize: 20)),
             decoration: BoxDecoration(
               boxShadow: const [
                 BoxShadow(
@@ -104,14 +103,16 @@ class _EventPageState extends State<EventPage> {
                       imageUrl: widget.imageUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      height: 250,
+                      height: getResponsiveSize(context,
+                          mobileSize: 250, dektopSize: 400),
                       filterQuality: FilterQuality.high,
                       errorWidget: (context, url, error) {
                         return CachedNetworkImage(
                           imageUrl: data['image'],
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: 250,
+                          height: getResponsiveSize(context,
+                              mobileSize: 250, dektopSize: 400),
                           filterQuality: FilterQuality.high,
                         );
                       },
@@ -132,6 +133,7 @@ class _EventPageState extends State<EventPage> {
                 if (data != null) ...[
                   ...data['body'].map<Widget>((content) {
                     return Container(
+                      width: double.infinity,
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -159,7 +161,7 @@ class _EventPageState extends State<EventPage> {
                         ),
                       ),
                       child: Text(
-                        stripHtmlTags(content),
+                        (content),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               height: 1.5,
                             ),

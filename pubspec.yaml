@@ -1,7 +1,7 @@
-name: school_app
+name: bethany
 description: "A new Flutter project."
 publish_to: "none"
-version: 0.1.0
+version: 1.0.0
 
 environment:
   sdk: 3.5.4
@@ -29,18 +29,34 @@ dependencies:
   package_info_plus: ^8.1.1
   iconsax: ^0.0.8
   google_fonts: ^6.2.1
+  flutter_email_sender: ^6.0.3
+  rename_app: ^1.6.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.0
+  change_app_package_name: ^1.4.0
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/logo.png"
+  min_sdk_android: 21 
+  windows:
+    generate: true
+    image_path: "assets/logo.png"
+    icon_size: 48 
+  macos:
+    generate: true
+    image_path: "assets/logo.png"
+  linux:
+    generate: true
+    image_path: "assets/logo.png"
 
 flutter:
   uses-material-design: true
-
-  # assets:
-  #   - assets/logo.jpg
-
   fonts:
     - family: Poppins
       fonts:

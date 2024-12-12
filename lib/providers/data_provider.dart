@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:school_app/data/api.dart';
+import 'package:bethany/data/api.dart';
 
 class DataProvider extends ChangeNotifier {
   dynamic homePageData;

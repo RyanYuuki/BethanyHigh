@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_app/providers/data_provider.dart';
-import 'package:school_app/theme/provider.dart';
+import 'package:bethany/providers/data_provider.dart';
+import 'package:bethany/theme/provider.dart';
+import 'package:bethany/widget/platform_builder.dart';
 import 'package:shimmer/shimmer.dart';
 
 String getGreeting() {
@@ -90,87 +93,91 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: ListView(
-            padding: const EdgeInsets.only(bottom: 100),
+            padding: getResponsiveValue(context, mobileValue: const EdgeInsets.only(bottom: 100), desktopValue: const EdgeInsets.symmetric(horizontal: 30)),
             shrinkWrap: true,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text("Discover our Departments",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Theme.of(context).colorScheme.primary)),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12 * radiusMultiplier),
-                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).colorScheme.surface,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
+              if (!Platform.isAndroid && !Platform.isIOS) ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text("Discover our Departments",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Theme.of(context).colorScheme.primary)),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12 * radiusMultiplier),
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.surface,
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                    border: Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.1),
                     ),
-                  ],
-                  border: Border.all(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.1),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: getResponsiveSize(context,
+                              mobileSize: 140, dektopSize: 350),
+                          viewportFraction: 1,
+                          initialPage: 0,
+                          enableInfiniteScroll: true,
+                          reverse: false,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 5),
+                          autoPlayAnimationDuration:
+                              const Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          enlargeCenterPage: false,
+                          scrollDirection: Axis.horizontal,
+                        ),
+                        items: departmentImages.map<Widget>((i) {
+                          return Container(
+                              clipBehavior: Clip.antiAlias,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      12 * radiusMultiplier)),
+                              child: CachedNetworkImage(
+                                imageUrl: i,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ));
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 10),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text("Bethany Institutions",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      ),
+                      const SizedBox(height: 5),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text(
+                            "A community fostering greatness through unity. Explore our top ICSE schools and citywide branches.",
+                            style: TextStyle()),
+                      ),
+                    ],
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 140,
-                        viewportFraction: 1,
-                        initialPage: 0,
-                        enableInfiniteScroll: true,
-                        reverse: false,
-                        autoPlay: true,
-                        autoPlayInterval: const Duration(seconds: 5),
-                        autoPlayAnimationDuration:
-                            const Duration(milliseconds: 800),
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        enlargeCenterPage: false,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                      items: departmentImages.map<Widget>((i) {
-                        return Container(
-                            clipBehavior: Clip.antiAlias,
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    12 * radiusMultiplier)),
-                            child: CachedNetworkImage(
-                              imageUrl: i,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ));
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 10),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text("Bethany Institutions",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    const SizedBox(height: 5),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                          "A community fostering greatness through unity. Explore our top ICSE schools and citywide branches.",
-                          style: TextStyle()),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 30),
+                const SizedBox(height: 30),
+              ],
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text("Discover our Campus",
@@ -180,7 +187,8 @@ class _HomePageState extends State<HomePage> {
                         color: Theme.of(context).colorScheme.primary)),
               ),
               SizedBox(
-                height: 270,
+                height: getResponsiveSize(context,
+                    mobileSize: 270, dektopSize: 400),
                 child: CarouselView(
                   itemSnapping: true,
                   itemExtent: MediaQuery.of(context).size.width,
@@ -214,7 +222,8 @@ class _HomePageState extends State<HomePage> {
                             imageUrl: campusImages[index]['image'],
                             fit: BoxFit.cover,
                             width: double.infinity,
-                            height: 200,
+                            height: getResponsiveSize(context,
+                                mobileSize: 200, dektopSize: 330),
                             filterQuality: FilterQuality.high,
                             placeholder: (context, url) => Shimmer.fromColors(
                               baseColor: Theme.of(context).colorScheme.surface,
@@ -261,8 +270,12 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getResponsiveCrossAxisCount(context,
+                      baseColumns: 2,
+                      maxColumns: 4,
+                      mobileBreakpoint: 800,
+                      tabletBreakpoint: 1200),
                   mainAxisExtent: 130,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -355,8 +368,9 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getResponsiveCrossAxisCount(context,
+                      baseColumns: 1, maxColumns: 3, tabletItemWidth: 400),
                   mainAxisExtent: 200,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -452,8 +466,9 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: getResponsiveCrossAxisCount(context,
+                        baseColumns: 1, maxColumns: 3, tabletItemWidth: 400),
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
                     mainAxisExtent: 270),
@@ -543,8 +558,9 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getResponsiveCrossAxisCount(context,
+                      baseColumns: 1, maxColumns: 4, tabletItemWidth: 300),
                   mainAxisExtent: 138,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -627,15 +643,17 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  mainAxisExtent: 330,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getResponsiveValue(context,
+                      mobileValue: 1, desktopValue: 2),
+                  mainAxisExtent: getResponsiveSize(context,
+                      mobileSize: 330, dektopSize: 370),
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
                 ),
                 itemCount: 2,
                 itemBuilder: (context, index) {
-                  final itemData = latestEvents[index + 1];
+                  final itemData = latestEvents[index == 1 ? index + 1 : index];
                   return Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -664,7 +682,8 @@ class _HomePageState extends State<HomePage> {
                               BorderRadius.circular(8 * radiusMultiplier),
                           child: CachedNetworkImage(
                             imageUrl: itemData['image'],
-                            height: 150,
+                            height: getResponsiveSize(context,
+                                mobileSize: 150, dektopSize: 200),
                             width: double.maxFinite,
                             fit: BoxFit.cover,
                           ),
@@ -755,8 +774,9 @@ class _HomePageState extends State<HomePage> {
                 physics: const NeverScrollableScrollPhysics(),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: getResponsiveCrossAxisCount(context,
+                      baseColumns: 1, maxColumns: 4, tabletItemWidth: 300),
                   mainAxisExtent: 200,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
