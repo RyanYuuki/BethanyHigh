@@ -113,12 +113,10 @@ Future<dynamic> fetchHomePage() async {
       }
       var campusImages = [];
       var imageElements = document.querySelectorAll(
-          '.et_pb_column.et_pb_column_4_4.et_pb_column_27 .et_pb_module.et_pb_image');
+          '.et_pb_column.et_pb_column_4_4.et_pb_column_26.et_pb_css_mix_blend_mode_passthrough img');
       for (var imageElement in imageElements) {
-        var imageUrl =
-            imageElement.querySelector('img')?.attributes['data-src'];
-        var imageAlt =
-            imageElement.querySelector('img')?.attributes['title']!.trim();
+        var imageUrl = imageElement.attributes['data-src'];
+        var imageAlt = imageElement.attributes['title']!.trim();
 
         if (imageUrl != null) {
           campusImages.add({"title": imageAlt, "image": imageUrl});
@@ -127,7 +125,7 @@ Future<dynamic> fetchHomePage() async {
 
       var policies = [];
       var policiesSelector = document.querySelectorAll(
-          ".et_pb_row.et_pb_row_26.et_pb_equal_columns .et_pb_with_border");
+          ".et_pb_row.et_pb_row_25 .et_pb_with_border");
       for (var el in policiesSelector) {
         var title = el.querySelector(".et_pb_text_inner h3")?.text;
         var description = '';
@@ -143,19 +141,17 @@ Future<dynamic> fetchHomePage() async {
             .add({"title": title, "description": description, "image": imgUrl});
       }
 
-      var imageContainers = document.querySelectorAll(
-          '.et_pb_row.et_pb_row_28 .n2-ss-slide-background-image');
+      var imageContainers = document.querySelectorAll('#n2-ss-14-align');
       var departmentImages = [];
       for (var container in imageContainers) {
         var sourceTags = container.querySelectorAll('img');
         for (var source in sourceTags) {
-          final index = sourceTags.indexOf(source);
-          if (index == 0 || index == 4 || index == 8 || index == 12) {
+          if (source.attributes['src']!.contains("bethany")) {
             departmentImages.add("https:${source.attributes['src']}");
           }
         }
       }
-      log(departmentImages.toString());
+      log(policies.toString());
       data = {
         "smallData": smallData,
         "events": posts,
