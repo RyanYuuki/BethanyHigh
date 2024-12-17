@@ -329,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                                             Brightness.dark
                                         ? 0.3
                                         : 0.7),
-                                blurRadius: 10.0 * blurMultiplier,
+                                blurRadius: 20 * blurMultiplier,
                                 spreadRadius: 2.0 * glowMultiplier,
                                 offset: const Offset(-2.0, 0),
                               ),
@@ -522,7 +522,7 @@ class _HomePageState extends State<HomePage> {
                                                     Brightness.dark
                                                 ? 0.3
                                                 : 0.7),
-                                    blurRadius: 10.0 * blurMultiplier,
+                                    blurRadius: 20 * blurMultiplier,
                                     spreadRadius: 4.0 * glowMultiplier,
                                     offset: const Offset(-2.0, 0),
                                   ),
@@ -614,7 +614,7 @@ class _HomePageState extends State<HomePage> {
                                                   Brightness.dark
                                               ? 0.3
                                               : 0.7),
-                                  blurRadius: 10.0 * blurMultiplier,
+                                  blurRadius: 20 * blurMultiplier,
                                   spreadRadius: 4.0 * glowMultiplier,
                                   offset: const Offset(-2.0, 0),
                                 ),
@@ -753,7 +753,7 @@ class _HomePageState extends State<HomePage> {
                                                         Brightness.dark
                                                     ? 0.3
                                                     : 0.7),
-                                        blurRadius: 10.0 * blurMultiplier,
+                                        blurRadius: 20 * blurMultiplier,
                                         spreadRadius: 4.0 * glowMultiplier,
                                         offset: const Offset(-2.0, 0),
                                       ),

@@ -104,7 +104,7 @@ class _ContactPageState extends State<ContactPage> {
           BoxShadow(
             color: Theme.of(context).colorScheme.primaryContainer.withOpacity(
                 Theme.of(context).brightness == Brightness.dark ? 0.8 : 1),
-            blurRadius: 10.0 * blurMultiplier!,
+            blurRadius: 20 * blurMultiplier!,
             spreadRadius: 2.0 * glowMultiplier!,
             offset: const Offset(-2.0, 0),
           ),
@@ -319,7 +319,7 @@ class _ContactPageState extends State<ContactPage> {
             BoxShadow(
               color: Theme.of(context).colorScheme.primaryFixed.withOpacity(
                   Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.8),
-              blurRadius: 10.0 * blurMultiplier!,
+              blurRadius: 20 * blurMultiplier!,
               spreadRadius: 4.0 * glowMultiplier!,
               offset: const Offset(-2.0, 0),
             ),

@@ -108,9 +108,16 @@ class SettingsAbout extends StatelessWidget {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? 0.3
+                                        : 0.7),
+                                blurRadius: 58.0,
+                                spreadRadius: 4.0,
+                                offset: const Offset(-2.0, 0),
                               ),
                             ],
                           ),
@@ -144,7 +151,7 @@ class SettingsAbout extends StatelessWidget {
                       CustomListTile(
                         onTap: () async {
                           await launchUrlHelper(
-                              'https://github.com/RyanYuuki/Bethany');
+                              'https://github.com/RyanYuuki/BethanyHigh');
                         },
                         leading: const Icon(HugeIcons.strokeRoundedGithub),
                         title: "GitHub",
@@ -153,7 +160,7 @@ class SettingsAbout extends StatelessWidget {
                       CustomListTile(
                         onTap: () async {
                           await launchUrlHelper(
-                              'https://github.com/RyanYuuki/Bethany/issues');
+                              'https://github.com/RyanYuuki/BethanyHigh/issues');
                         },
                         leading: const Icon(Icons.bug_report),
                         title: "Features/Issues",

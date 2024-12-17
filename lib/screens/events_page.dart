@@ -367,7 +367,7 @@ _buildEventImageTile(BuildContext context, dynamic event, int index) {
                           Theme.of(context).brightness == Brightness.dark
                               ? 0.3
                               : 0.4),
-                      blurRadius: 10.0,
+                      blurRadius: 20,
                       spreadRadius: 4.0,
                       offset: const Offset(-2.0, 0),
                     ),
@@ -430,7 +430,7 @@ _buildEventTile(BuildContext context, dynamic event, int index) {
                       Theme.of(context).brightness == Brightness.dark
                           ? 0.3
                           : 0.4),
-                  blurRadius: 10.0,
+                  blurRadius: 20,
                   spreadRadius: 4.0,
                   offset: const Offset(-2.0, 0),
                 ),

@@ -779,7 +779,7 @@ class _SettingsThemeState extends State<SettingsTheme> {
                                         Brightness.dark
                                     ? 0.3
                                     : 0.4),
-                            blurRadius: 10.0,
+                            blurRadius: 20,
                             spreadRadius: 4.0,
                             offset: const Offset(-2.0, 0),
                           ),

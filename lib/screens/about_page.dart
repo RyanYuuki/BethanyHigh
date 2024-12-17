@@ -16,7 +16,7 @@ Container glowingLogo(BuildContext context) {
           BoxShadow(
             color: Theme.of(context).colorScheme.primaryFixed.withOpacity(
                 Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.8),
-            blurRadius: 10.0 * provider.blurMultiplier,
+            blurRadius: 20.0 * provider.blurMultiplier,
             spreadRadius: 4.0 * provider.glowMultiplier,
             offset: const Offset(-2.0, 0),
           ),
