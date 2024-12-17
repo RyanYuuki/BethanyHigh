@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -93,91 +91,101 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           body: ListView(
-            padding: getResponsiveValue(context, mobileValue: const EdgeInsets.only(bottom: 100), desktopValue: const EdgeInsets.symmetric(horizontal: 30)),
+            padding: getResponsiveValue(context,
+                mobileValue: const EdgeInsets.only(bottom: 100),
+                desktopValue: const EdgeInsets.symmetric(horizontal: 30)),
             shrinkWrap: true,
             children: [
-              if (!Platform.isAndroid && !Platform.isIOS) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text("Discover our Departments",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.primary)),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12 * radiusMultiplier),
-                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).colorScheme.surface,
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.1),
+              PlatformBuilder(
+                androidBuilder: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text("Discover our Departments",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Theme.of(context).colorScheme.primary)),
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height: getResponsiveSize(context,
-                              mobileSize: 140, dektopSize: 350),
-                          viewportFraction: 1,
-                          initialPage: 0,
-                          enableInfiniteScroll: true,
-                          reverse: false,
-                          autoPlay: true,
-                          autoPlayInterval: const Duration(seconds: 5),
-                          autoPlayAnimationDuration:
-                              const Duration(milliseconds: 800),
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          enlargeCenterPage: false,
-                          scrollDirection: Axis.horizontal,
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(12 * radiusMultiplier),
+                        color:
+                            Theme.of(context).colorScheme.surfaceContainerHigh,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).colorScheme.surface,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.1),
                         ),
-                        items: departmentImages.map<Widget>((i) {
-                          return Container(
-                              clipBehavior: Clip.antiAlias,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      12 * radiusMultiplier)),
-                              child: CachedNetworkImage(
-                                imageUrl: i,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ));
-                        }).toList(),
                       ),
-                      const SizedBox(height: 10),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text("Bethany Institutions",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              height: getResponsiveSize(context,
+                                  mobileSize: 140, dektopSize: 300),
+                              viewportFraction: 1,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              reverse: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 5),
+                              autoPlayAnimationDuration:
+                                  const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: false,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                            items: departmentImages.map<Widget>((i) {
+                              return Container(
+                                  clipBehavior: Clip.antiAlias,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          12 * radiusMultiplier)),
+                                  child: CachedNetworkImage(
+                                    imageUrl: i,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ));
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text("Bethany Institutions",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          const SizedBox(height: 5),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text(
+                                "A community fostering greatness through unity. Explore our top ICSE schools and citywide branches.",
+                                style: TextStyle()),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 5),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                            "A community fostering greatness through unity. Explore our top ICSE schools and citywide branches.",
-                            style: TextStyle()),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
                 ),
-                const SizedBox(height: 30),
-              ],
+                desktopBuilder: const SizedBox.shrink(),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text("Discover our Campus",
@@ -370,7 +378,10 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: getResponsiveCrossAxisCount(context,
-                      baseColumns: 1, maxColumns: 3, tabletItemWidth: 400),
+                      baseColumns: 1,
+                      maxColumns: 3,
+                      tabletItemWidth: 400,
+                      mobileItemWidth: 400),
                   mainAxisExtent: 200,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -468,7 +479,11 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: getResponsiveCrossAxisCount(context,
-                        baseColumns: 1, maxColumns: 3, tabletItemWidth: 400),
+                        baseColumns: 1,
+                        maxColumns: 4,
+                        mobileItemWidth: 300,
+                        tabletItemWidth: 400,
+                        desktopItemWidth: 350),
                     mainAxisSpacing: 16,
                     crossAxisSpacing: 16,
                     mainAxisExtent: 270),
@@ -560,7 +575,7 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: getResponsiveCrossAxisCount(context,
-                      baseColumns: 1, maxColumns: 4, tabletItemWidth: 300),
+                      baseColumns: 2, maxColumns: 4, tabletItemWidth: 300),
                   mainAxisExtent: 138,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -776,7 +791,10 @@ class _HomePageState extends State<HomePage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: getResponsiveCrossAxisCount(context,
-                      baseColumns: 1, maxColumns: 4, tabletItemWidth: 300),
+                      baseColumns: 1,
+                      maxColumns: 4,
+                      mobileItemWidth: 300,
+                      tabletItemWidth: 500),
                   mainAxisExtent: 200,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,

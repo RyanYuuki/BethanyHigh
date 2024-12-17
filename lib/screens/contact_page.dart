@@ -23,6 +23,8 @@ class _ContactPageState extends State<ContactPage> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
+  double? glowMultiplier;
+  double? blurMultiplier;
   @override
   void initState() {
     super.initState();
@@ -31,6 +33,9 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ThemeProvider>(context);
+    glowMultiplier = provider.glowMultiplier;
+    blurMultiplier = provider.blurMultiplier;
     return FutureBuilder<dynamic>(
       builder: (context, snapshot) {
         if (snapshot.hasError) {
@@ -46,7 +51,10 @@ class _ContactPageState extends State<ContactPage> {
           return Scaffold(
             backgroundColor: Theme.of(context).colorScheme.surface,
             body: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(
+                  horizontal: getResponsiveSize(context,
+                      mobileSize: 10,
+                      dektopSize: MediaQuery.of(context).size.width * 0.1)),
               children: [
                 Container(
                   padding: EdgeInsets.all(getResponsiveSize(context,
@@ -77,10 +85,6 @@ class _ContactPageState extends State<ContactPage> {
   Widget _buildGlowingInput(
       BuildContext context, TextEditingController controller,
       {int maxLines = 1, required String label, required IconData icon}) {
-    final provider = Provider.of<ThemeProvider>(context);
-    final glowMultiplier = provider.glowMultiplier;
-    final blurMultiplier = provider.blurMultiplier;
-
     String? validator(String? value) {
       if (value == null || value.isEmpty) {
         return '$label is required';
@@ -98,10 +102,10 @@ class _ContactPageState extends State<ContactPage> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(
-                Theme.of(context).brightness == Brightness.dark ? 1 : 0.8),
-            blurRadius: 10.0 * blurMultiplier,
-            spreadRadius: 2.0 * glowMultiplier,
+            color: Theme.of(context).colorScheme.primaryContainer.withOpacity(
+                Theme.of(context).brightness == Brightness.dark ? 0.8 : 1),
+            blurRadius: 10.0 * blurMultiplier!,
+            spreadRadius: 2.0 * glowMultiplier!,
             offset: const Offset(-2.0, 0),
           ),
         ],
@@ -296,6 +300,7 @@ class _ContactPageState extends State<ContactPage> {
         ListTileWithCheckMark(
           leading: const Icon(HugeIcons.strokeRoundedBuilding01),
           color: Colors.black,
+          tileColor: Theme.of(context).colorScheme.primaryFixed,
           active: isDepSelected,
           title: isDepSelected
               ? deps[selectedDepIndex]['name']
@@ -312,10 +317,10 @@ class _ContactPageState extends State<ContactPage> {
           padding: const EdgeInsets.all(0),
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.primary.withOpacity(
-                  Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.7),
-              blurRadius: 10.0,
-              spreadRadius: 2.0,
+              color: Theme.of(context).colorScheme.primaryFixed.withOpacity(
+                  Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.8),
+              blurRadius: 10.0 * blurMultiplier!,
+              spreadRadius: 4.0 * glowMultiplier!,
               offset: const Offset(-2.0, 0),
             ),
           ]),
@@ -333,6 +338,7 @@ class _ContactPageState extends State<ContactPage> {
               }
             },
             style: ElevatedButton.styleFrom(
+              elevation: 0,
               fixedSize: const Size(double.maxFinite, 50),
               backgroundColor: Theme.of(context).colorScheme.primaryFixed,
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
