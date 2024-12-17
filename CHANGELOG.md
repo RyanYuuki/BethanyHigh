@@ -33,6 +33,7 @@
 * [db68990](https://github.com/RyanYuuki/BethanyHigh/commit/db68990): feat: font added
 
 ### 🛠️ Bug Fixes & Improvements
+* [1624751](https://github.com/RyanYuuki/BethanyHigh/commit/1624751): fix: fixed layout glitching due to uncompatible deps
 * [9797726](https://github.com/RyanYuuki/BethanyHigh/commit/9797726): fix: fixed broken entries in scrapper
 * [6ffc531](https://github.com/RyanYuuki/BethanyHigh/commit/6ffc531): fix: added perms and icons for all platforms
 * [4df24b4](https://github.com/RyanYuuki/BethanyHigh/commit/4df24b4): fix: added network perm error
