@@ -1,6 +1,7 @@
 
 
 ### 🎉 New Features
+* [c171880](https://github.com/RyanYuuki/BethanyHigh/commit/c171880): feat: splash screen
 * [d1c2f0f](https://github.com/RyanYuuki/BethanyHigh/commit/d1c2f0f): feat: made contact page
 * [bd425d4](https://github.com/RyanYuuki/BethanyHigh/commit/bd425d4): feat: made custom switch tile and init slider semantics
 * [9852278](https://github.com/RyanYuuki/BethanyHigh/commit/9852278): feat: made custom M3 Slider
@@ -43,6 +44,7 @@
 * [8878060](https://github.com/RyanYuuki/BethanyHigh/commit/8878060): refactor: filled in static data
 
 ### 🎨 Style Changes
+* [0a6c384](https://github.com/RyanYuuki/BethanyHigh/commit/0a6c384): style: changed default blur radius
 * [9e83108](https://github.com/RyanYuuki/BethanyHigh/commit/9e83108): style: some stylings and responsive changes
 * [c2e0434](https://github.com/RyanYuuki/BethanyHigh/commit/c2e0434): style: styled all the pages
 * [88b14fa](https://github.com/RyanYuuki/BethanyHigh/commit/88b14fa): style: added stylings to dynamic pages
