@@ -123,6 +123,22 @@ class ThemeProvider extends ChangeNotifier {
     _updateTheme();
   }
 
+  void clearCache() {
+    final box = Hive.box("themeData");
+    box.clear();
+    isLightMode = true;
+    isOled = false;
+    glowMultiplier = 1.0;
+    radiusMultiplier = 1.0;
+    blurMultiplier = 1.0;
+    selectedVariantIndex = 0;
+    currentThemeMode = "default";
+    _seedColor = Colors.green;
+
+    _updateTheme();
+    notifyListeners();
+  }
+
   void _updateTheme() {
     _selectedTheme = isLightMode
         ? AppTheme.lightTheme.copyWith(

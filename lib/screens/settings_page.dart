@@ -1,9 +1,13 @@
+import 'package:bethany/theme/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:bethany/screens/settings/settings_about.dart';
 import 'package:bethany/screens/settings/settings_theme.dart';
 import 'package:bethany/screens/settings/settings_ui.dart';
 import 'package:bethany/widget/custom_tile.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -60,6 +64,13 @@ class _SettingsPageState extends State<SettingsPage> {
                           MaterialPageRoute(
                               builder: (context) => const SettingsTheme()));
                     }),
+                CustomTile(
+                    icon: Iconsax.trash,
+                    title: "Clear Cache",
+                    description: "Clear all the settings.",
+                    onTap: () {
+                      showClearCacheDialog(context);
+                    }),
                 const SizedBox(height: 10),
                 CustomTile(
                   icon: HugeIcons.strokeRoundedInformationCircle,
@@ -77,4 +88,31 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ));
   }
+}
+
+Future<void> showClearCacheDialog(BuildContext context) async {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        content: const Text('Are you sure you want to clear the cache?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Provider.of<ThemeProvider>(context, listen: false).clearCache();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      );
+    },
+  );
 }
