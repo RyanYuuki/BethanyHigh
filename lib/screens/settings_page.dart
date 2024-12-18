@@ -105,11 +105,19 @@ Future<void> showClearCacheDialog(BuildContext context) async {
             child: const Text('Cancel'),
           ),
           TextButton(
+            style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primaryFixed),
             onPressed: () {
               Provider.of<ThemeProvider>(context, listen: false).clearCache();
               Navigator.of(context).pop();
             },
-            child: const Text('Confirm'),
+            child: const Text(
+              'Confirm',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       );
